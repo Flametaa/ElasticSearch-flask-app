@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title%} Home Page {% endblock%}
+{% block content%}
+	{%if cont!="Welcome"%}
+	<div class="list-group">
+	{%for resp in cont %}
+
+	
+		
+		  <div class="d-flex w-100 justify-content-between">
+			<h5 class="mb-1"><b>Play name:</b> {{resp._source.play_name}}</h5>
+			<small><b>line number:</b> {{resp._source.line_number}}</small>
+		  </div>
+		  <p class="mb-1"> <b>Speech:</b> {{resp._source.text_entry}}</p>
+		  <small><b>Speaker:</b> {{resp._source.speaker}}</small>
+		  <br>
+		
+	  
+
+
+	{%endfor %}
+	</div>
+	{%endif%}
+
+{% endblock%}
