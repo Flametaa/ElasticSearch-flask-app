@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+		<title> {% block title %}{% endblock %} </title>
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			
+		  
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			  <ul class="navbar-nav mr-auto">
+				<li class="nav-item active">
+				  <a class="nav-link" href="/home"> Home <span class="sr-only">(current)</span></a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="/flight/visualization"> Visualization <span class="sr-only">(current)</span></a>
+				  </li>
+				<li class="nav-item dropdown">
+				  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Chose Database
+				  </a>
+				  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="/shakespear">Shakespear Database</a>
+					<a class="dropdown-item" href="/flight">Flight database</a>
+					
+				  </div>
+                </li>
+                
+				<li class="nav-item">
+				  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">number of hits: {{coun}}</a>
+				</li>
+			  </ul>
+			  <form class="form-inline my-2 my-lg-0" method="post">
+				<input class="form-control mr-sm-2" type="Size" value="{{ request.form['size_'] }}" placeholder="Size" aria-label="Size" name="size_" id="search_me"  >
+				
+				<select class="nav-link dropdown-toggle"  name="sort_by" id="navbarDropdown" type="submit" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+					<option>Sort by</option>
+					{% for val in sor_l %}
+					<option class="dropdown-item" value={{val}}>{{val}}</option>>
+					
+					{% endfor %}
+				</select>
+				<select class="nav-link dropdown-toggle"  name="order_by" id="navbarDropdown" type="submit" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+					<option>Sort Order</option>
+					<option>asc</option>
+					<option>desc</option>
+                </select>
+                <input class="form-control mr-sm-2" type="search" value="{{ request.form['source'] }}" placeholder="source" aria-label="source" name="source" id="source"  >
+				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			  </form>
+			</div>
+		  </nav>
+
+		{% block content %} {% endblock %}
+
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+	</body>
+
+</html>

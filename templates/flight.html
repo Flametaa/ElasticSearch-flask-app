@@ -1,0 +1,52 @@
+{% extends "base1.html" %}
+{% block title%} Flight Kibana {% endblock%}
+{% block content%}
+	{%if to_plot==True %}
+	<form class="form-inline my-2 my-lg-0" method="post">
+		<input class="form-control mr-sm-2" type="Size" value="{{ request.form['size_plt'] }}" placeholder="Size" aria-label="Size" name="size_plt" id="search_me"  >
+		
+		<select class="nav-link dropdown-toggle"  name="x_ax" id="navbarDropdown" type="submit" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+			<option>X axis</option>
+			{% for val in sor_l %}
+			<option class="dropdown-item" value={{val}}>{{val}}</option>>
+			
+			{% endfor %}
+		</select>
+		<select class="nav-link dropdown-toggle"  name="y_ax" id="navbarDropdown" type="submit" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+			<option>Y axis</option>
+			{% for val in sor_l %}
+
+			<option class="dropdown-item" value={{val}}>{{val}}</option>>
+			
+			{% endfor %}
+		</select>
+		<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+	  </form>
+
+
+	<img src="data:image/png;base64, {{ plot_graph }}">
+	{%endif %}
+
+
+	{%if cont!="Welcome"%}
+	<div class="list-group">
+	{%for resp in cont %}
+
+	
+		
+		  <div class="d-flex w-100 justify-content-between">
+			<h5 class="mb-1"><b>Average Price :</b> {{resp._source.AvgTicketPrice}} $$</h5>
+			<h5><b>Date:</b> {{resp._source.timestamp}}</h5>
+		  </div>
+		  <p class="mb-1"> <b>Dest:</b> {{resp._source.Dest}}</p>
+		  <p><b>Origin:</b> {{resp._source.Origin}}</p>
+		  <br>
+		
+	  
+
+
+	{%endfor %}
+	</div>
+	{%endif%}
+
+{% endblock%}
