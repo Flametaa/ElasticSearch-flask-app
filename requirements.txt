@@ -1,0 +1,5 @@
+elasticsearch
+flask
+matplotlib
+pandas
+seaborn
