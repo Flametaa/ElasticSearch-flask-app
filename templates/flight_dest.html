@@ -1,5 +1,5 @@
 {% extends "base1.html" %}
-{% block title%} Flight Kibana {% endblock%}
+{% block title%} Flight Dest Kibana {% endblock%}
 {% block content%}
 	{%if to_plot==True %}
 	<form class="form-inline my-2 my-lg-0" method="post">
@@ -20,7 +20,7 @@
 			
 			{% endfor %}
 		</select>
-		<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search Source</button>
+		<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search Destination</button>
 	  </form>
 
 
@@ -31,9 +31,6 @@
 	{%if cont!="Welcome"%}
 	<div class="list-group">
 	{%for resp in cont %}
-
-	
-		
 		  <div class="d-flex w-100 justify-content-between">
 			<h5 class="mb-1"><b>Average Price :</b> {{resp._source.AvgTicketPrice}} $$</h5>
 			<h5><b>Date:</b> {{resp._source.timestamp}}</h5>
@@ -41,10 +38,6 @@
 		  <p class="mb-1"> <b>Dest:</b> {{resp._source.Dest}}</p>
 		  <p><b>Origin:</b> {{resp._source.Origin}}</p>
 		  <br>
-		
-	  
-
-
 	{%endfor %}
 	</div>
 	{%endif%}
