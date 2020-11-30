@@ -102,7 +102,7 @@ def flight():
 
 @app.route("/shakespear/visualization",methods = ["POST","GET"])
 def shake():
-    data = pd.read_csv("C:/Users/asus/Desktop/BigDataFramework/shakespear.csv")
+    data = pd.read_csv("./data/shakespear.csv")
     siz = 100
     x_ax = "play_name"
     y_ax = "speaker"
@@ -121,7 +121,8 @@ def shake():
 
 @app.route("/flight/visualization",methods = ["POST","GET"])
 def fli():
-    data = pd.read_csv("C:/Users/asus/Desktop/BigDataFramework/flight.csv")
+    # data = pd.read_csv("C:/Users/asus/Desktop/BigDataFramework/flight.csv")
+    data = pd.read_csv("./data/flight.csv")
     siz = 100
     x_ax = "Dest"
     y_ax = "Origin"
