@@ -26,25 +26,25 @@ def plotFig(data,x,y,siz):
     return plot_url
 
 
-
-@app.route("/shakespear",methods = ["POST","GET"])
+@app.route("/shakespear", methods=["POST","GET"])
 def shakespear():
-    
+    """
+    Flask page to query text entry 
+    """
     q = request.form.get("search_me")
-    sor="_score"
-    res="Welcome"
-    coun=""
+    sor = "_score"
+    res = "Welcome"
+    count = ""
     sor_l = ["_score","speaker",'play_name','speech_number']
     siz = 10
     if request.method == "POST":
-        if request.form.get("size_") is not None and request.form.get("size_")!="Size" and request.form.get("size_")!="":
+        if request.form.get("size_") is not None and request.form.get("size_") != "Size" and request.form.get("size_") != "":
             siz = int(request.form.get("size_"))
-        if request.form.get("sort_by") is not None and request.form.get("sort_by")!="Sort by":
-            
+        if request.form.get("sort_by") is not None and request.form.get("sort_by") != "Sort by":    
             sor = request.form.get("sort_by")
-        orde = request.form.get("order_by")
-        if orde is not None and orde!="Sort Order" :
-            sor = sor+":"+orde
+        order = request.form.get("order_by")
+        if order is not None and order!="Sort Order" :
+            sor = sor + ":" + order
         query = {"query":  {
                             "match": {
                                     "text_entry.english": {
@@ -53,75 +53,115 @@ def shakespear():
                                     }
                         }
             }
+    # send qeury request to elastic
     if q is not None:
-        
-        res = es.search(index="shakespeare-catalog-2",body = query,sort=sor,size=siz)
-        coun = res["hits"]["total"]["value"]
+        res = es.search(
+            index="shakespeare-catalog-2",
+            body=query,
+            sort=sor,
+            size=siz)
+        count = res["hits"]["total"]["value"]
         res= res["hits"]["hits"]
-    return render_template("shakespear.html",cont=res,coun=coun,sor_l=sor_l)
+    return render_template("shakespear.html",cont=res,coun=count,sor_l=sor_l)
 
 
-@app.route("/flight",methods = ["POST","GET"])
+@app.route("/flight", methods=["POST","GET"])
 def flight():
-    
+    """
+    Search Flights by Origin
+    """
     sor="_score"
     res="Welcome"
-    coun=""
-    sour=""
+    count=""
+    source=""
     sor_l = ["AvgTicketPrice","DistanceMiles",'FlightTimeHour','timestamp']
     siz = 10
     if request.method == "POST":
         if request.form.get("size_") is not None and request.form.get("size_")!="Size" and request.form.get("size_")!="":
             siz = int(request.form.get("size_"))
         if request.form.get("source") is not None and request.form.get("source")!="source" and request.form.get("source")!="":
-            sour = request.form.get("source")
-            sour = sour.capitalize()
+            source = request.form.get("source")
+            source = source.capitalize()
+        if request.form.get("sort_by") is not None and request.form.get("sort_by")!="Sort by":
+            sor = request.form.get("sort_by")
+        order = request.form.get("order_by")
+        if order is not None and order != "Sort Order":
+            sor = sor + ":" + order
+    # define query
+    query = {
+            "query": {
+                "query_string": {
+                    "fields": ["Origin"],
+                    "query": "*"+source+"*"
+                }
+                }
+            }
+    # send request to ES
+    if  source is not None and source!="":
+        res = es.search(index="kibana_sample_data_flights",body = query,sort=sor,size=siz)
+        count = res["hits"]["total"]["value"]
+        res= res["hits"]["hits"]
+    return render_template("flight.html",cont=res,coun=count,sor_l=sor_l,to_plot=False)
+
+
+@app.route("/flight_dest", methods=["POST","GET"])
+def flight_dest():
+    """
+    Search Flights by Destination
+    """
+    sor="_score"
+    res="Welcome"
+    count=""
+    dest = ""
+    sor_l = ["AvgTicketPrice","DistanceMiles",'FlightTimeHour','timestamp']
+    siz = 10
+    if request.method == "POST":
+        if request.form.get("size_") is not None and request.form.get("size_")!="Size" and request.form.get("size_")!="":
+            siz = int(request.form.get("size_"))
+        if request.form.get("source") is not None and request.form.get("source")!="source" and request.form.get("source")!="":
+            dest = request.form.get("source")
+            dest = dest.capitalize()
         
         if request.form.get("sort_by") is not None and request.form.get("sort_by")!="Sort by":
-            
             sor = request.form.get("sort_by")
-        orde = request.form.get("order_by")
-        if orde is not None and orde!="Sort Order" :
-            sor = sor+":"+orde
+        order = request.form.get("order_by")
+        if order is not None and order != "Sort Order":
+            sor = sor + ":" + order
         
     query = {
             "query": {
                 "query_string": {
                     "fields": ["Dest"],
-                    "query": "*"+sour+"*"
+                    "query": "*"+dest+"*"
                 }
                 }
             }
-    if  sour is not None and sour!="":
-        
+    
+    if dest is not None and dest != "":
         res = es.search(index="kibana_sample_data_flights",body = query,sort=sor,size=siz)
-        
-        coun = res["hits"]["total"]["value"]
+        count = res["hits"]["total"]["value"]
         res= res["hits"]["hits"]
-    return render_template("flight.html",cont=res,coun=coun,sor_l=sor_l,to_plot=False)
+    return render_template("flight.html",cont=res,coun=count,sor_l=sor_l,to_plot=False)
 
-@app.route("/shakespear/visualization",methods = ["POST","GET"])
+@app.route("/shakespear/visualization", methods=["POST","GET"])
 def shake():
     data = pd.read_csv("./data/shakespear.csv")
     siz = 100
     x_ax = "play_name"
     y_ax = "speaker"
     if request.method == "POST":
-        if request.form.get("size_plt") is not None and request.form.get("size_plt")!="Size" and request.form.get("size_plt")!="":
+        if request.form.get("size_plt") is not None and request.form.get("size_plt") != "Size" and request.form.get("size_plt") != "":
             siz = int(request.form.get("size_plt"))
         if request.form.get("x_ax") is not None and request.form.get("x_ax")!="X axis" and request.form.get("x_ax")!="":
             x_ax = request.form.get("x_ax")
         if request.form.get("y_ax") is not None and request.form.get("y_ax")!="Y axis" and request.form.get("y_ax")!="":
             y_ax = request.form.get("y_ax")
             
-        
-    
-    fig = plotFig(data,x_ax,y_ax,siz)
+    fig = plotFig(data, x_ax, y_ax, siz)
     return render_template("shakespear.html",plot_graph=fig,to_plot=True,sor_l=data.columns.tolist())
 
 @app.route("/flight/visualization",methods = ["POST","GET"])
 def fli():
-    # data = pd.read_csv("C:/Users/asus/Desktop/BigDataFramework/flight.csv")
     data = pd.read_csv("./data/flight.csv")
     siz = 100
     x_ax = "Dest"
@@ -134,8 +174,6 @@ def fli():
         if request.form.get("y_ax") is not None and request.form.get("y_ax")!="Y axis" and request.form.get("y_ax")!="":
             y_ax = request.form.get("y_ax")
             
-        
-    
     fig = plotFig(data,x_ax,y_ax,siz)
     return render_template("flight.html",plot_graph=fig,to_plot=True,sor_l=data.columns.tolist())
 
